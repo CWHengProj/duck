@@ -2,34 +2,38 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strings"
 	"time"
 )
 
+var logger *log.Logger
+
 func main() {
 	var i string
 	fmt.Println("quack - enter response here (TODO intro art here)")
 	for true {
+		//TODO: CRITICAL BUG - it's returning responses per word now
 		fmt.Scan(&i)
 		//TODO: shift + enter for new line
 		switch firstWord := strings.Split(i, " ")[0]; firstWord {
 		case "exit":
 			fmt.Println("quack - gracefully exiting..")
+			logger.Println("Exiting Application..")
 			os.Exit(0)
 		case "clear":
 			clearScreen()
+			logger.Println("Screen has been cleared..")
 		default:
-
-			// Faux loading
+			logger.Println("Loading reply..")
 			// TODO: using ANSI art for polish phase
 			for i := 0; i <= 100; i++ {
 				fmt.Printf("\rLoading... %d%%", i)
-				time.Sleep(10 * time.Millisecond)
+				time.Sleep(10 * time.Millisecond) //TODO: get the real value from config
 			}
-
-			//TODO: add option to retain the chat history in logs
-			fmt.Println(getRandomResponse())
+			//TODO: add option to retain the chat history in chatLogs
+			fmt.Println("\n", getRandomResponse())
 		}
 	}
 }
@@ -38,8 +42,18 @@ func init() {
 	// apikeyInit
 	/// ttlInit
 	//TODO: error handling for broken init
+
 	//TODO: init logging service
-	fmt.Println("appi started succesfully")
-	//TODO: add init ascii here
+	logPath := "./duck.log"
+	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666) //TODO: actually understand this
+	if err != nil {
+		log.Fatal(err)
+	}
+	logger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	logger.Println("Started new conversation with Duck")
+
+	printANSI()
 
 }
+
+//TODO: sigterm on ctrl + c to trigger graceful shutdown

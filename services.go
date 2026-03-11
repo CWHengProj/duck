@@ -15,9 +15,11 @@ func getRandomResponse() string {
 	return array[0]
 }
 
-var clearScreen = func() {
+func clearScreen() {
+	fmt.Print("\033[H\033[2J") //TODO: understand ansi escape sequences (this is basically ctrl + L)
+}
 
-	fmt.Print("\033[H\033[2J")
-	//TODO: proper ansi escape sequence to clear screen
-
+func printANSI() {
+	//TODO: retrieve this from external file so that it is easier for user customization
+	fmt.Println("QUACKKKKKKK printing ANSI ART")
 }
