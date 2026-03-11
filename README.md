@@ -11,6 +11,8 @@
 ## Phase 1 (mvp)
 - CLI app
 - Basic canned responses
+- logging / chat history / session history
+- packaging binaries
 
 ## Phase 2 (polish)
 - ascii art intro
