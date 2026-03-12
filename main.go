@@ -11,20 +11,20 @@ import (
 var logger *log.Logger
 
 func main() {
-	var i string
+
 	fmt.Println("quack - enter response here (TODO intro art here)")
-	for true {
+	for {
 		//TODO: CRITICAL BUG - it's returning responses per word now
-		fmt.Scan(&i)
+		var input string
+		// TODO: file input making sure that it will scan properly
+		fmt.Scanf("%s",&input)
 		//TODO: shift + enter for new line
-		switch firstWord := strings.Split(i, " ")[0]; firstWord {
+		switch words := strings.Split(input, " "); words[0] {
 		case "exit":
 			fmt.Println("quack - gracefully exiting..")
-			logger.Println("Exiting Application..")
 			os.Exit(0)
 		case "clear":
 			clearScreen()
-			logger.Println("Screen has been cleared..")
 		default:
 			logger.Println("Loading reply..")
 			// TODO: using ANSI art for polish phase
