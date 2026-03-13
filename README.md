@@ -4,7 +4,7 @@
 - unlimited tokens
 
 ## Invoke Duck
-- goDuckYourself
+- run prebuilt binary (./duck) - from releases page
 - to exit, ctrl + c or exit
 - clear
 
