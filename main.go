@@ -34,6 +34,7 @@ func main() {
 			log.Fatal(err)
 		}
 		input = strings.TrimSpace(input)
+		logger.Println("User input: ", input)
 		//TODO: shift + enter for new line
 		switch words := strings.Split(input, " "); words[0] {
 		case "exit":
@@ -41,7 +42,6 @@ func main() {
 		case "clear":
 			clearScreen()
 		default:
-			logger.Println("Loading reply..")
 			// TODO: using ANSI art spinner for polish phase
 			for i := 0; i <= 100; i++ {
 				fmt.Printf("\rLoading... %d%%", i)
