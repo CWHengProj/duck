@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -13,11 +14,15 @@ var logger *log.Logger
 func main() {
 
 	fmt.Println("quack - enter response here (TODO intro art here)")
+	reader := bufio.NewReader(os.Stdin)
 	for {
-		//TODO: CRITICAL BUG - it's returning responses per word now
 		var input string
-		// TODO: file input making sure that it will scan properly
-		fmt.Scanf("%s",&input)
+		fmt.Println("Quack! Ask me anything")
+		input, err := reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		input = strings.TrimSpace(input) 
 		//TODO: shift + enter for new line
 		switch words := strings.Split(input, " "); words[0] {
 		case "exit":
@@ -33,7 +38,7 @@ func main() {
 				time.Sleep(10 * time.Millisecond) //TODO: get the real value from config
 			}
 			//TODO: add option to retain the chat history in chatLogs
-			fmt.Println("\n", getRandomResponse())
+			fmt.Println("\n Quack:", getRandomResponse())
 		}
 	}
 }
