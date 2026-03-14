@@ -35,4 +35,5 @@ go.work.sum
 *.log
 # MISC
 braindump.md
+duck
 
