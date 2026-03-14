@@ -64,69 +64,35 @@ jobs:
           # Create and push the new tag
           git tag "${{ env.VERSION }}" -m "ci: release version ${{ env.VERSION }}"
           git push origin "${{ env.VERSION }}"
-      - name: Resolve true commit SHA
-        id: sha_resolver
+      - name: Fetch PR Metadata and Commits
+        id: pr_info
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ "${{ github.event_name }}" == "push" ]]; then
-            ACTUAL_SHA=$(git log --merges --pretty=format:%H -1 | xargs -I{} git show {} --no-patch --format=%P | cut -d' ' -f2)
-            echo "TRUE_SHA=${ACTUAL_SHA:-${{ github.sha }}}" >> $GITHUB_OUTPUT
+          # 1. Get PR details
+          PR_JSON=$(gh pr list --search "${{ github.sha }}" --state merged --json number,title,body --limit 1 | jq '.[0]')
+          
+          # 2. Extract Title and Body
+          echo "title=$(echo $PR_JSON | jq -r '.title // "Manual Release"')" >> $GITHUB_OUTPUT
+          echo "body=$(echo $PR_JSON | jq -r '.body // ""')" >> $GITHUB_OUTPUT
+          
+          # 3. Get commit list (Works for both Squash and Regular merges)
+          PR_NUM=$(echo $PR_JSON | jq -r '.number // ""')
+          if [ -n "$PR_NUM" ]; then
+            gh pr view $PR_NUM --json commits --template '{{range .commits}}• {{.messageHeadline}} ({{.oid | printf "%.7s"}}){{"\n"}}{{end}}' > commits.txt
           else
-            echo "TRUE_SHA=${{ github.sha }}" >> $GITHUB_OUTPUT
-          fi
-      - name: Get PR metadata
-        uses: 8BitJonny/gh-get-current-pr@3.0.0
-        id: pr_meta
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ steps.sha_resolver.outputs.TRUE_SHA }}
-
-      - name: Check if PR was squashed
-        id: check_squash
-        run: |
-          # Fetch PR commits using GitHub API and count them using Python
-          PR_COMMITS=$(curl -s \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.pr_meta.outputs.number }}/commits" | \
-            python3 -c "import sys, json; print(len(json.load(sys.stdin)))")
-          echo "Commit count: $PR_COMMITS"
-          # If there's only one commit, assume it's a squash merge
-          if [[ "$PR_COMMITS" -eq 1 ]]; then
-            echo "SQUASH_MERGE=true" >> $GITHUB_ENV
-          else
-            echo "SQUASH_MERGE=false" >> $GITHUB_ENV
-          fi
-      - name: Get commit messages with SHAs
-        run: |
-          if [[ "$SQUASH_MERGE" == "true" ]]; then
-            # For squash merges, just fetch the single PR commit
-            response=$(curl -s \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.pr_meta.outputs.number }}/commits")
-            echo "$response" \
-              | python3 -c "import sys, json; d = json.load(sys.stdin)[0]; print(f\"{d['commit']['message']} ({d['sha'][:7]})\")" \
-              > commits.txt
-          else
-            # For regular merges, exclude lines containing "Merge pull request"
-            git log --pretty=format:"%s (%h)" ${{ github.event.before }}..${{ github.sha }} \
-              | grep -v "Merge pull request" \
-              > commits.txt
+            git log --pretty=format:"• %s (%h)" -n 5 > commits.txt
           fi
       - name: Build release notes file
         run: |
-          # Create a file for the release notes.
-          # Title from the PR:
-          echo "## ${{ steps.pr_meta.outputs.pr_title }}" > release_body.md
-          # Conditionally add a "Summary" section if there's a PR body.
-          if [[ -n "${{ steps.pr_meta.outputs.pr_body }}" ]]; then
-            echo "" >> release_body.md
-            echo "### Summary" >> release_body.md
-            echo "${{ steps.pr_meta.outputs.pr_body }}" >> release_body.md
+          echo "## ${{ steps.pr_info.outputs.title }}" > release_body.md
+          
+          if [[ -n "${{ steps.pr_info.outputs.body }}" ]]; then
+            echo -e "\n### Summary\n${{ steps.pr_info.outputs.body }}" >> release_body.md
           fi
-          echo "" >> release_body.md
-          echo "### Changes" >> release_body.md
-          awk '{print "• " $0}' commits.txt >> release_body.md
+
+          echo -e "\n### Changes" >> release_body.md
+          cat commits.txt >> release_body.md
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         env:
