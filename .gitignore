@@ -33,3 +33,6 @@ go.work.sum
 
 # Log files
 *.log
+# MISC
+braindump.md
+

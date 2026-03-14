@@ -52,8 +52,9 @@ func main() {
 		}
 	}
 }
+
 func init() {
-	//TODO: init the constants
+	//TODO: phase 3 init the constants
 	// apikeyInit
 	/// ttlInit
 	//TODO: error handling for broken init

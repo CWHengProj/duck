@@ -1,0 +1,27 @@
+name: Go release management
+
+on:
+    push:
+        branches:
+            'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+          
+      - name: Display Go version
+        run: go version
+
+      - uses: actions/checkout@v5
+      - run: echo "pulled from repo"
+
+      - run: go build -o duck
+      - run: 
+
+
+    

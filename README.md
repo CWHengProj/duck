@@ -14,15 +14,15 @@
 - logging / chat history / session history
 - packaging binaries
 
-## Phase 2 (polish)
+## Phase 2 (for the love of the game)
+- ci/cd for release management
+- unit tests (is there even anything to test)
+
+## Phase 3 (polish)
 - ascii art intro
 - thinking animation
     - (wait) + animations (race against the machine)
     - hit (done) option if solution found before the "thinking" is complete
-
-## Phase 3 (for the love of the game)
-- ci/cd for release management
-- unit tests (is there even anything to test)
 
 ## Phase 4 (distribution)
 - apt / brew distribution
