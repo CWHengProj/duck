@@ -28,6 +28,7 @@ func main() {
 	//TODO: tips section to remind user of shortcuts?
 	fmt.Println("(/help for tips)")
 	reader := bufio.NewReader(os.Stdin)
+	//TODO: should have a channel to listen in on "/done" or interrupt it some way
 	for {
 		var input string
 		input, err := reader.ReadString('\n')
@@ -48,7 +49,7 @@ func main() {
 			waitTime := 5 //TODO: get from config instead
 			spinner(waitTime)
 			fmt.Println("\nQuack:", getRandomResponse())
-			
+
 		}
 	}
 }

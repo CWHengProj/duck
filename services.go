@@ -47,7 +47,7 @@ func printANSI() {
 }
 
 func spinner(waitTime int) {
-	for start := time.Now(); time.Since(start) < time.Duration(waitTime) * time.Second; { 
+	for start := time.Now(); time.Since(start) < time.Duration(waitTime)*time.Second; {
 		fmt.Printf("\rThinking    \u2014")
 		time.Sleep(250 * time.Millisecond)
 		fmt.Printf("\rThinking.   \\")
