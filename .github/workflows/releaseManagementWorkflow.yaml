@@ -23,8 +23,12 @@ jobs:
         uses: actions/setup-go@v5
         
       - name: Build binaries
-        run: go build -o duck
-
+          # Cross-compiling for Linux, MacOS, and Windows
+          run: |
+            GOOS=linux GOARCH=amd64 go build -o duck-linux-amd64
+            GOOS=darwin GOARCH=amd64 go build -o duck-darwin-amd64
+            GOOS=windows GOARCH=amd64 go build -o duck-windows-amd64.exe
+            
       - name: Determine next version from last tag
         id: semver
         run: |
@@ -152,5 +156,9 @@ jobs:
           body_path: release_body.md
           draft: false
           prerelease: false
+          files: |
+            duck-linux-amd64
+            duck-darwin-amd64
+            duck-windows-amd64.exe  
 
     
