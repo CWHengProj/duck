@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 )
 
 var logger *log.Logger
@@ -25,8 +24,11 @@ func main() {
 	}()
 
 	printANSI()
-	fmt.Println("quack - enter response here (TODO intro art here)")
+	fmt.Println("What's on your mind?")
+	//TODO: tips section to remind user of shortcuts?
+	fmt.Println("(/help for tips)")
 	reader := bufio.NewReader(os.Stdin)
+	//TODO: should have a channel to listen in on "/done" or interrupt it some way
 	for {
 		var input string
 		input, err := reader.ReadString('\n')
@@ -37,18 +39,17 @@ func main() {
 		logger.Println("User input: ", input)
 		//TODO: shift + enter for new line
 		switch words := strings.Split(input, " "); words[0] {
-		case "exit":
+		case "/exit":
 			exit()
-		case "clear":
+		case "/help":
+			help()
+		case "/clear":
 			clearScreen()
 		default:
-			// TODO: using ANSI art spinner for polish phase
-			for i := 0; i <= 100; i++ {
-				fmt.Printf("\rLoading... %d%%", i)
-				time.Sleep(10 * time.Millisecond) //TODO: get the real value from config
-			}
-			//TODO: add option to retain the chat history in chatLogs
+			waitTime := 5 //TODO: get from config instead
+			spinner(waitTime)
 			fmt.Println("\nQuack:", getRandomResponse())
+
 		}
 	}
 }
