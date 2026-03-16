@@ -1,12 +1,15 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
-	"log"
 	"math/rand"
 	"os"
 	"time"
 )
+
+//go:embed art/duckShaded.ans
+var duckArt []byte
 
 var helpDescription = "shows all the shortcuts"
 var clearDescription = "clears the screen, start fresh"
@@ -39,11 +42,7 @@ func exit() {
 
 func printANSI() {
 	logger.Println("Printing ANSI art..")
-	data, err := os.ReadFile("art/duckShaded.ans")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Print(string(data))
+	fmt.Print(string(duckArt))
 }
 
 func spinner(waitTime int) {
