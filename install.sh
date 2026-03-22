@@ -15,4 +15,4 @@ source ~/.bashrc;
 echo "giving duck execute permissions";
 chmod +x duck;
 echo "running duck.. use "duck" next time to invoke duck (restart terminal if it does not call duck properly)";
-${FILEPATH}/duck;
+${FILEPATH}/duck < /dev/tty;
