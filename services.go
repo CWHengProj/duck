@@ -23,6 +23,7 @@ func getRandomResponse() string {
 		"What is one thing you need to know but you don't?",
 		"Let's break this down. Explain to me what you already understand.",
 		"Let's Quack this case right open. Tell me more.",
+		"It is fine to slow down. Let's list out the requirements for your task.",
 	}
 	seed := rand.Perm(len(array))[0]
 	return array[seed]
@@ -32,6 +33,15 @@ func clearScreen() {
 	logger.Println("Screen has been cleared..")
 	fmt.Print("\033[H\033[2J") //TODO: understand ansi escape sequences (this is basically ctrl + L)
 	fmt.Println("Conversation cleared. Let's quack things up!")
+}
+
+func webSearch(input string) {
+	logger.Println("Searching the web with query: ", input)
+	//TODO: call websearch, use search operators - https://duckduckgo.com/duckduckgo-help-pages/results/syntax
+	fmt.Println("\rPerforming Web Search...")
+	time.Sleep(3000 * time.Millisecond)
+	fmt.Println("\rHope the web search helped!")
+
 }
 
 func exit() {
