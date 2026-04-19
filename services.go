@@ -38,6 +38,7 @@ func clearScreen() {
 func webSearch(input string) {
 	logger.Println("Searching the web with query: ", input)
 	//TODO: call websearch, use search operators - https://duckduckgo.com/duckduckgo-help-pages/results/syntax
+	//TODO: why is it not clearing screen? i forgot
 	fmt.Println("\rPerforming Web Search...")
 	time.Sleep(3000 * time.Millisecond)
 	fmt.Println("\rHope the web search helped!")
