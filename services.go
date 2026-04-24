@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -14,6 +16,7 @@ var duckArt []byte
 var helpDescription = "shows all the shortcuts"
 var clearDescription = "clears the screen, start fresh"
 var exitDescription = "exits the current session"
+var webSearchDescription = "uses your default browser to search for your query e.g. /websearch are ducks waterproof?"
 
 func getRandomResponse() string {
 	var array = []string{
@@ -37,12 +40,28 @@ func clearScreen() {
 
 func webSearch(input string) {
 	logger.Println("Searching the web with query: ", input)
-	//TODO: call websearch, use search operators - https://duckduckgo.com/duckduckgo-help-pages/results/syntax
-	//TODO: why is it not clearing screen? i forgot
-	fmt.Println("\rPerforming Web Search...")
+	queryString := retrieveSearchURL(input)
+	exec.Command("open", queryString).Run()
+	//TODO: add search operators - https://duckduckgo.com/duckduckgo-help-pages/results/syntax
+	fmt.Printf("\rPerforming Web Search...")
 	time.Sleep(3000 * time.Millisecond)
-	fmt.Println("\rHope the web search helped!")
+	fmt.Printf("\rHope the web search helped!")
 
+}
+
+func retrieveSearchURL(input string) string {
+	baseURL := "https://duckduckgo.com/?q=" //TODO: make this configurable
+	words := strings.Split(input, " ")
+	words = words[1:]
+	query := ""
+	for i, word := range words {
+		if i == len(words)-1 {
+			query += word
+		} else {
+			query += word + "+"
+		}
+	}
+	return baseURL + query
 }
 
 func exit() {
@@ -77,5 +96,6 @@ func help() {
 	fmt.Println("/help:", helpDescription)
 	fmt.Println("/exit:", exitDescription)
 	fmt.Println("/clear:", clearDescription)
+	fmt.Println("/websearch:", webSearchDescription)
 
 }
