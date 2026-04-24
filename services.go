@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -14,6 +16,7 @@ var duckArt []byte
 var helpDescription = "shows all the shortcuts"
 var clearDescription = "clears the screen, start fresh"
 var exitDescription = "exits the current session"
+var webSearchDescription = "uses your default browser to search for your query e.g. /websearch are ducks waterproof?"
 
 func getRandomResponse() string {
 	var array = []string{
@@ -23,6 +26,7 @@ func getRandomResponse() string {
 		"What is one thing you need to know but you don't?",
 		"Let's break this down. Explain to me what you already understand.",
 		"Let's Quack this case right open. Tell me more.",
+		"It is fine to slow down. Let's list out the requirements for your task.",
 	}
 	seed := rand.Perm(len(array))[0]
 	return array[seed]
@@ -32,6 +36,32 @@ func clearScreen() {
 	logger.Println("Screen has been cleared..")
 	fmt.Print("\033[H\033[2J") //TODO: understand ansi escape sequences (this is basically ctrl + L)
 	fmt.Println("Conversation cleared. Let's quack things up!")
+}
+
+func webSearch(input string) {
+	logger.Println("Searching the web with query: ", input)
+	queryString := retrieveSearchURL(input)
+	exec.Command("open", queryString).Run()
+	//TODO: add search operators - https://duckduckgo.com/duckduckgo-help-pages/results/syntax
+	fmt.Printf("\rPerforming Web Search...")
+	time.Sleep(3000 * time.Millisecond)
+	fmt.Printf("\rHope the web search helped!")
+
+}
+
+func retrieveSearchURL(input string) string {
+	baseURL := "https://duckduckgo.com/?q=" //TODO: make this configurable
+	words := strings.Split(input, " ")
+	words = words[1:]
+	query := ""
+	for i, word := range words {
+		if i == len(words)-1 {
+			query += word
+		} else {
+			query += word + "+"
+		}
+	}
+	return baseURL + query
 }
 
 func exit() {
@@ -66,5 +96,6 @@ func help() {
 	fmt.Println("/help:", helpDescription)
 	fmt.Println("/exit:", exitDescription)
 	fmt.Println("/clear:", clearDescription)
+	fmt.Println("/websearch:", webSearchDescription)
 
 }

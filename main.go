@@ -45,6 +45,12 @@ func main() {
 			help()
 		case "/clear":
 			clearScreen()
+		case "/websearch":
+			if len(words) > 1 {
+				webSearch(input)
+			} else {
+				help()
+			}
 		default:
 			waitTime := 5 //TODO: get from config instead
 			spinner(waitTime)
