@@ -25,8 +25,7 @@ func main() {
 
 	printANSI()
 	fmt.Println("What's on your mind?")
-	//TODO: tips section to remind user of shortcuts?
-	fmt.Println("(/help for tips)")
+	fmt.Println("(/help to see all available commands)")
 	reader := bufio.NewReader(os.Stdin)
 	//TODO: should have a channel to listen in on "/done" or interrupt it some way
 	for {
@@ -67,7 +66,7 @@ func init() {
 	//TODO: error handling for broken init
 
 	logPath := "./duck.log"
-	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666) //TODO: actually understand this
+	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}

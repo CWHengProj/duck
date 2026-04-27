@@ -34,7 +34,7 @@ func getRandomResponse() string {
 
 func clearScreen() {
 	logger.Println("Screen has been cleared..")
-	fmt.Print("\033[H\033[2J") //TODO: understand ansi escape sequences (this is basically ctrl + L)
+	fmt.Print("\033[H\033[2J")
 	fmt.Println("Conversation cleared. Let's quack things up!")
 }
 
@@ -45,7 +45,7 @@ func webSearch(input string) {
 	//TODO: add search operators - https://duckduckgo.com/duckduckgo-help-pages/results/syntax
 	fmt.Printf("\rPerforming Web Search...")
 	time.Sleep(3000 * time.Millisecond)
-	fmt.Printf("\rHope the web search helped!")
+	fmt.Printf("\rHope the web search helped!\n")
 
 }
 
